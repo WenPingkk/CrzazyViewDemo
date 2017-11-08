@@ -6,14 +6,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.ComposeShader;
+import android.graphics.LightingColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
+import android.graphics.Xfermode;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -32,6 +39,7 @@ public class ViewDemo2 extends View{
         super(context, attrs);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -41,6 +49,37 @@ public class ViewDemo2 extends View{
 //        sweepGradientDemo(canvas);
 //        bitmapShaderDemo(canvas);
 //        ComposeShaderDemo(canvas);
+//        bitmapLightingColorFilterShaderDemo(canvas);
+//        proterDuffColorDemo(canvas);
+//        xfermodeDemo(canvas);//没有实现效果
+        
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void xfermodeDemo(Canvas canvas) {
+        Paint paint = new Paint();
+        int saved = canvas.saveLayer(null,paint);
+//        int saved = canvas.saveLayer(null,null,Canvas.ALL_SAVE_FLAG);
+        Xfermode xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_logo);
+        paint.setXfermode(xfermode);
+        canvas.drawBitmap(bitmap,10,10,paint);
+        paint.setXfermode(null);
+
+        canvas.restoreToCount(saved);
+    }
+
+    private void proterDuffColorDemo(Canvas canvas) {
+        Paint paint = new Paint();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        Shader shader = new BitmapShader(bitmap,Shader.TileMode.REPEAT,Shader.TileMode.REPEAT);
+        paint.setShader(shader);
+//        ColorFilter lightingColorFilter = new LightingColorFilter(0xffffff, 0x003000);
+//        paint.setColorFilter(lightingColorFilter);
+
+        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(0x30ffff, PorterDuff.Mode.SRC_OVER);
+        paint.setColorFilter(colorFilter);
+        canvas.drawCircle(300,300,200,paint);
     }
 
     private void ComposeShaderDemo(Canvas canvas) {
@@ -70,6 +109,15 @@ public class ViewDemo2 extends View{
         paint.setShader(shader);
         canvas.drawCircle(300,300,300,paint);
     }
+    private void bitmapLightingColorFilterShaderDemo(Canvas canvas) {
+        Paint paint = new Paint();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        Shader shader = new BitmapShader(bitmap,Shader.TileMode.REPEAT,Shader.TileMode.REPEAT);
+        paint.setShader(shader);
+        ColorFilter lightingColorFilter = new LightingColorFilter(0xffffff, 0x003000);
+        paint.setColorFilter(lightingColorFilter);
+        canvas.drawCircle(300,300,300,paint);
+    }
 
     private void sweepGradientDemo(Canvas canvas) {
         Paint paint = new Paint();
@@ -96,7 +144,6 @@ public class ViewDemo2 extends View{
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setShader(shader);
-
         canvas.drawCircle(300,300,200,paint);
     }
 }
