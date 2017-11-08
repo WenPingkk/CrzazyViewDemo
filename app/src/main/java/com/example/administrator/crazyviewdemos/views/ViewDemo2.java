@@ -1,16 +1,23 @@
 package com.example.administrator.crazyviewdemos.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.ComposePathEffect;
 import android.graphics.ComposeShader;
+import android.graphics.DashPathEffect;
+import android.graphics.DiscretePathEffect;
 import android.graphics.LightingColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
@@ -39,6 +46,7 @@ public class ViewDemo2 extends View{
         super(context, attrs);
     }
 
+    @SuppressLint("DrawAllocation")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDraw(Canvas canvas) {
@@ -47,12 +55,113 @@ public class ViewDemo2 extends View{
 //        linearGradientDemo(canvas);
 //        radialGradientDemo(canvas);
 //        sweepGradientDemo(canvas);
-        bitmapShaderDemo(canvas);
+//        bitmapShaderDemo(canvas);
 //        ComposeShaderDemo(canvas);
 //        bitmapLightingColorFilterShaderDemo(canvas);
 //        proterDuffColorDemo(canvas);
 //        xfermodeDemo(canvas);//没有实现效果
+//        pathEffectDemo(canvas);
+//        composePathEffectDemo(canvas);
+//        shadowLayoutDemo(canvas);
 
+//        maskFilterDemo(canvas);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void maskFilterDemo(Canvas canvas) {
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        Path path = new Path();
+//        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.BLUE);
+
+        PathEffect discreteEffect = new DiscretePathEffect(20, 5);
+
+        paint.setPathEffect(discreteEffect);
+
+        paint.setMaskFilter(new BlurMaskFilter(10,BlurMaskFilter.Blur.NORMAL));
+
+//        path.addArc(200,200,400,400,-225,225);
+        path.arcTo(200,200,400,400,-225,225,true);
+        //上面两句的效果是一样的?无论上一句的forceMove为true还是false
+        path.arcTo(400,200,600,400,-180,225,false);
+        path.lineTo(400,542);
+        path.close();//封闭该心形
+        canvas.drawPath(path,paint);
+    }
+
+
+    /**
+     * setShadowLayer() 是设置的在绘制层下方的附加效果；
+     * MaskFilter 和它相反，设置的是在绘制层上方的附加效果
+     * @param canvas
+     */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void shadowLayoutDemo(Canvas canvas) {
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        Path path = new Path();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.BLUE);
+        PathEffect pathEffect = new DashPathEffect(new float[]{20, 10, 5, 10}, 0);
+
+        PathEffect discreteEffect = new DiscretePathEffect(20, 5);
+
+        ComposePathEffect composePathEffect = new ComposePathEffect(pathEffect, discreteEffect);
+
+        paint.setPathEffect(composePathEffect);
+
+        paint.setShadowLayer(10,0,0,Color.RED);
+
+//        path.addArc(200,200,400,400,-225,225);
+        path.arcTo(200,200,400,400,-225,225,true);
+        //上面两句的效果是一样的?无论上一句的forceMove为true还是false
+        path.arcTo(400,200,600,400,-180,225,false);
+        path.lineTo(400,542);
+        path.close();//封闭该心形
+        canvas.drawPath(path,paint);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void composePathEffectDemo(Canvas canvas) {
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        Path path = new Path();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.BLUE);
+        PathEffect pathEffect = new DashPathEffect(new float[]{20, 10, 5, 10}, 0);
+
+        PathEffect discreteEffect = new DiscretePathEffect(20, 5);
+
+        ComposePathEffect composePathEffect = new ComposePathEffect(pathEffect, discreteEffect);
+
+        paint.setPathEffect(composePathEffect);
+
+//        path.addArc(200,200,400,400,-225,225);
+        path.arcTo(200,200,400,400,-225,225,true);
+        //上面两句的效果是一样的?无论上一句的forceMove为true还是false
+        path.arcTo(400,200,600,400,-180,225,false);
+        path.lineTo(400,542);
+        path.close();//封闭该心形
+        canvas.drawPath(path,paint);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void pathEffectDemo(Canvas canvas) {
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        Path path = new Path();
+        paint.setStyle(Paint.Style.STROKE);
+        PathEffect pathEffect = new DashPathEffect(new float[]{20, 10, 5, 10}, 0);
+        paint.setPathEffect(pathEffect);
+
+//        path.addArc(200,200,400,400,-225,225);
+        path.arcTo(200,200,400,400,-225,225,true);
+        //上面两句的效果是一样的?无论上一句的forceMove为true还是false
+        path.arcTo(400,200,600,400,-180,225,false);
+        path.lineTo(400,542);
+        path.close();//封闭该心形
+        canvas.drawPath(path,paint);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -104,9 +213,9 @@ public class ViewDemo2 extends View{
 
     private void bitmapShaderDemo(Canvas canvas) {
         Paint paint = new Paint();
-        paint.setDither(true);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-        Shader shader = new BitmapShader(bitmap,Shader.TileMode.REPEAT,Shader.TileMode.REPEAT);
+        paint.setFilterBitmap(true);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_logo);
+        Shader shader = new BitmapShader(bitmap,Shader.TileMode.CLAMP,Shader.TileMode.CLAMP);
         paint.setShader(shader);
         canvas.drawCircle(300,300,300,paint);
     }
