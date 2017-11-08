@@ -47,12 +47,12 @@ public class ViewDemo2 extends View{
 //        linearGradientDemo(canvas);
 //        radialGradientDemo(canvas);
 //        sweepGradientDemo(canvas);
-//        bitmapShaderDemo(canvas);
+        bitmapShaderDemo(canvas);
 //        ComposeShaderDemo(canvas);
 //        bitmapLightingColorFilterShaderDemo(canvas);
 //        proterDuffColorDemo(canvas);
 //        xfermodeDemo(canvas);//没有实现效果
-        
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -104,6 +104,7 @@ public class ViewDemo2 extends View{
 
     private void bitmapShaderDemo(Canvas canvas) {
         Paint paint = new Paint();
+        paint.setDither(true);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
         Shader shader = new BitmapShader(bitmap,Shader.TileMode.REPEAT,Shader.TileMode.REPEAT);
         paint.setShader(shader);
